@@ -7,6 +7,11 @@ const {
   generateRefreshToken,
 } = require("../utils/jwt");
 const { generateOTP } = require("../utils/otp");
+const { v4: uuidv4 } = require('uuid');
+
+const uniqueKey = uuidv4();
+console.log(uniqueKey); // Example: 'f9b3279c-7a02-4cbb-9f5c-c8e849f6e4f0'
+
 
 function isOtpExpired(createdAt) {
   const created = new Date(createdAt).getTime();
@@ -89,9 +94,10 @@ exports.verifyOtp = async (req, res) => {
       user = users[0];
       await db.query("UPDATE new_users SET signup_method = 'otp', status = 1 WHERE id = ?", [user.id]);
     } else {
+      const uniqueKey = uuidv4();
       const [result] = await db.query(
-        "INSERT INTO new_users (phone, signup_method, status) VALUES (?, ?, ?)",
-        [phone, "otp", 1]
+        "INSERT INTO new_users (phone, signup_method, status, unique_key) VALUES (?, ?, ?, ?)",
+        [phone, "otp", 1, uniqueKey]
       );
       user = { id: result.insertId, phone };
       isNewUser = true;
@@ -227,7 +233,8 @@ exports.googleLogin = async (req, res) => {
       if (user) {
         await db.query("UPDATE new_users SET name = ?, signup_method = 'google' WHERE id = ?", [name, user.id]);
       } else {
-        const [result] = await db.query("INSERT INTO new_users (email, name, signup_method, status) VALUES (?, ?, ?, ?)", [email, name, "google", 1]);
+        const uniqueKey = uuidv4();
+        const [result] = await db.query("INSERT INTO new_users (email, name, signup_method, status, unique_key) VALUES (?, ?, ?, ?, ?)", [email, name, "google", 1, uniqueKey]);
         user = { id: result.insertId, email, name };
         isNewUser = true;
       }

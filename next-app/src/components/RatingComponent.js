@@ -1,29 +1,24 @@
 import Image from 'next/image';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
-export default function RatingComponent() {
+export default function RatingComponent({ userDetails }) {
+  const router = useRouter();
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
-
+  const { name, unique_key } = userDetails || {};
   const handleRatingClick = (rate) => {
     setRating(rate);
-
     // Perform task based on selected rating
     switch (rate) {
       case 1:
-        alert('We’re sorry! 😞 Thanks for the feedback.');
-        break;
       case 2:
-        alert('Thanks for the feedback! We’ll improve.');
-        break;
       case 3:
-        alert('Thanks! We hope to make your next visit better.');
+        router.replace('/feedback?rating=' + rate + '&unique_key=' + unique_key);
         break;
       case 4:
-        alert('Great! We’re glad you enjoyed it!');
-        break;
       case 5:
-        alert('Awesome! Thank you for the 5 stars! 🌟');
+        router.replace('/dashboard');
         break;
       default:
         break;
@@ -34,16 +29,20 @@ export default function RatingComponent() {
     <div className="container container-width">
         <div className="row">
             <div className="main-content text-center">
-                <p>
-                    <Image
-                    src="/assets/img/taj-logo.svg"
-                    alt="Taj Logo"
-                    width={350}
-                    height={80}
-                    className="mx-auto"
-                    />
-                </p>
-                <h1 className="h1size30 pb-5 pt-2">Taj Hotels</h1>
+                
+                {userDetails && (
+                  <>
+                    <p>
+                      <Image
+                        src="/assets/img/taj-logo.svg"
+                        alt="Taj Logo"
+                        width={350}
+                        height={80}
+                        className="mx-auto" />
+                    </p>
+                    <h1 className="h1size30 pb-5 pt-2">{name}</h1>
+                  </>
+                )}
                 <p className="dark-gray-16-500">
                     We’d love to hear<br />
                     your experience with us?
@@ -70,15 +69,6 @@ export default function RatingComponent() {
                         </span>
                     ))}
                 </div>
-                {/* <p className="mb-4 pb-4">
-                    <Image
-                    src="/assets/img/star-rating.svg"
-                    alt="Star Rating"
-                    width={200}
-                    height={40}
-                    className="mx-auto"
-                    />
-                </p> */}
                 <div className="bottom-image position-relative">
                     <Image
                     src="/assets/img/image-w-100.svg"

@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { loginSuccess } from '@/store/authSlice';

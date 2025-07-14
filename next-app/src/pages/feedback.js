@@ -1,4 +1,4 @@
-// pages/login.js
+// pages/feedback.js
 import AuthHeadMeta from "@/components/AuthHeadMeta";
 import FeedbackFormComponent from "@/components/FeedbackFormComponent";
 import AuthFooterScripts from "@/components/AuthFooterScripts";

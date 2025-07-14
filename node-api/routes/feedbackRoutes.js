@@ -4,7 +4,7 @@ const { submitFeedback, getAllFeedbacks } = require('../controllers/feedbackCont
 const jwtMiddleware = require('../middleware/jwtMiddleware');
 const validateFeedback = require('../middleware/validateFeedback');
 
-router.post('/create-feedback', jwtMiddleware, validateFeedback, submitFeedback);
-router.get('/feedbacks', jwtMiddleware, getAllFeedbacks);
+router.post('/create-feedback', validateFeedback, submitFeedback);
+router.get('/feedbacks', getAllFeedbacks);
 
 module.exports = router;

@@ -1,19 +1,18 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
-import api from "@/utils/api"; // Axios instance with baseURL & withCredentials
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import axios from 'axios';
 
 export default function FeedbackFormComponent() {
   const router = useRouter();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { rating: queryRating, unique_key } = router.query;
+
   const [rating, setRating] = useState(1);
   const [hovered, setHovered] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState('');
-  const [feedbackType, setFeedbackType] = useState(''); // 'success' | 'error'
-
+  const [feedbackType, setFeedbackType] = useState('');
 
   const [formData, setFormData] = useState({
     rating: 1,
@@ -26,12 +25,48 @@ export default function FeedbackFormComponent() {
     followUp: '',
   });
 
-  // Redirect if not logged in
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/login");
+    if (!router.isReady) return;
+
+    if (!queryRating || !unique_key) {
+      setFeedbackMessage('Missing rating or user key in URL.');
+      setFeedbackType('error');
+      return;
     }
-  }, [isAuthenticated, router]);
+
+    const numericRating = parseInt(queryRating);
+    if (numericRating >= 1 && numericRating <= 5) {
+      setRating(numericRating);
+      setFormData((prev) => ({ ...prev, rating: numericRating }));
+    } else {
+      setFeedbackMessage('Invalid rating in URL.');
+      setFeedbackType('error');
+      return;
+    }
+
+    const fetchUserDetails = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5001/api/user/profile/unique/${unique_key}`);
+        if (res.data) {
+          const { name, email, phone } = res.data;
+          // setFormData((prev) => ({
+          //   ...prev,
+          //   name: name || '',
+          //   email: email || '',
+          //   phone: phone || '',
+          // }));
+        } else {
+          setFeedbackMessage('❌ User not found.');
+          setFeedbackType('error');
+        }
+      } catch (err) {
+        console.error('User fetch failed:', err);
+        setFeedbackMessage('❌ Failed to fetch user details.');
+        setFeedbackType('error');
+      }
+    };
+    fetchUserDetails();
+  }, [router.isReady, queryRating, unique_key, router]);
 
   useEffect(() => {
     if (feedbackMessage) {
@@ -46,37 +81,10 @@ export default function FeedbackFormComponent() {
   const handleRatingClick = (rate) => {
     setRating(rate);
     setFormData((prev) => ({ ...prev, rating: rate }));
-
-    // switch (rate) {
-    //   case 1:
-    //     setFeedbackMessage('We’re sorry! 😞 Thanks for the feedback.');
-    //     setFeedbackType('error');
-    //     break;
-    //   case 2:
-    //     setFeedbackMessage('Thanks for the feedback! We’ll improve.');
-    //     setFeedbackType('error');
-    //     break;
-    //   case 3:
-    //     setFeedbackMessage('Thanks! We hope to make your next visit better.');
-    //     setFeedbackType('success');
-    //     break;
-    //   case 4:
-    //     setFeedbackMessage('Great! We’re glad you enjoyed it!');
-    //     setFeedbackType('success');
-    //     break;
-    //   case 5:
-    //     setFeedbackMessage('Awesome! Thank you for the 5 stars! 🌟');
-    //     setFeedbackType('success');
-    //     break;
-    //   default:
-    //     break;
-    // }
   };
-
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
     if (type === 'checkbox' && name === 'reasons') {
       const updatedReasons = checked
         ? [...formData.reasons, value]
@@ -94,7 +102,6 @@ export default function FeedbackFormComponent() {
 
     const { rating, name, email, phone, reasons, otherReason, improvement, followUp } = formData;
 
-    // Client-side validation
     if (!rating || !name || !email || !phone || reasons.length === 0 || !followUp) {
       const missingFields = [];
 
@@ -111,20 +118,17 @@ export default function FeedbackFormComponent() {
     }
 
     try {
-      const res = await api.post(
-        '/feedback/create-feedback',
-        {
-          rating,
-          name,
-          email,
-          phone,
-          reasons,
-          otherReason,
-          improvement,
-          followUp,
-        },
-        { withCredentials: true }
-      );
+      const res = await axios.post('http://localhost:5001/api/feedback/create-feedback', {
+        rating,
+        name,
+        email,
+        phone,
+        reasons,
+        otherReason,
+        improvement,
+        followUp,
+        unique_key, // Include this if your backend expects it
+      });
 
       if (res.data) {
         setFeedbackMessage('✅ Feedback submitted successfully!');
@@ -140,6 +144,9 @@ export default function FeedbackFormComponent() {
           improvement: '',
           followUp: '',
         });
+
+        router.push('/thank-you');
+        
       } else {
         setFeedbackMessage('❌ Something went wrong');
         setFeedbackType('error');
@@ -166,34 +173,31 @@ export default function FeedbackFormComponent() {
           </p>
           <p className="dark-gray-24-500 pb-3 pt-2">We’re sorry your<br />experience wasn’t great.</p>
           <p className="dark-gray-14-400">What are your thoughts on<br />the experience with us?</p>
-          {/* <p><Image src="/assets/img/three-star.svg" alt="Star" width={120} height={24} className="mx-auto" /></p> */}
+
           <div className="d-flex justify-content-center">
-              {[1, 2, 3, 4, 5].map((star) => (
-                  <span
-                  key={star}
-                  onClick={() => handleRatingClick(star)}
-                  onMouseEnter={() => setHovered(star)}
-                  onMouseLeave={() => setHovered(0)}
-                  style={{ cursor: 'pointer' }}
-                  >
-                  <Image
-                      src={
-                      (hovered || rating) >= star
-                          ? '/assets/img/star-filled.svg'
-                          : '/assets/img/star-outline.png'
-                      }
-                      alt={`Star ${star}`}
-                      width={60}
-                      height={60}
-                  />
-                  </span>
-              ))}
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span
+                key={star}
+                onClick={() => handleRatingClick(star)}
+                onMouseEnter={() => setHovered(star)}
+                onMouseLeave={() => setHovered(0)}
+                style={{ cursor: 'pointer' }}
+              >
+                <Image
+                  src={(hovered || rating) >= star ? '/assets/img/star-filled.svg' : '/assets/img/star-outline.png'}
+                  alt={`Star ${star}`}
+                  width={60}
+                  height={60}
+                />
+              </span>
+            ))}
           </div>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="mt-5">
           <div className="row form-lable-size form-lable-left">
             <input type="hidden" name="rating" value={formData.rating} />
+
             {/* Name */}
             <div className="mb-4">
               <label className="form-label">Name*</label>
@@ -203,8 +207,8 @@ export default function FeedbackFormComponent() {
                 name="name"
                 placeholder="Enter your name"
                 value={formData.name}
-                required
                 onChange={handleChange}
+                required
               />
             </div>
 
@@ -217,8 +221,8 @@ export default function FeedbackFormComponent() {
                 name="email"
                 placeholder="name@example.com"
                 value={formData.email}
-                required
                 onChange={handleChange}
+                required
               />
             </div>
 
@@ -232,8 +236,8 @@ export default function FeedbackFormComponent() {
                 placeholder="Enter your phone number"
                 maxLength="10"
                 value={formData.phone}
-                required
                 onChange={handleChange}
+                required
               />
             </div>
 
@@ -314,14 +318,15 @@ export default function FeedbackFormComponent() {
           {/* Submit Button */}
           <div className="col-12 mt-4">
             <div className="d-grid">
-              <button type="submit" id="validateBtn" className="button-animation button-before-animation validate">
+              <button type="submit" className="button-animation button-before-animation validate">
                 Submit Feedback
               </button>
             </div>
           </div>
+
           {feedbackMessage && (
             <div
-              className={`alert ${
+              className={`alert mt-3 ${
                 feedbackType === 'success' ? 'alert-success' : 'alert-danger'
               }`}
               role="alert"

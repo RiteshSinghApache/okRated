@@ -1,4 +1,4 @@
-// components/FooterScripts.js
+// components/AuthFooterScripts.js
 export default function AuthFooterScripts() {
   return (
     <>

@@ -1,6 +1,6 @@
-body {
+/* body {
     font-family: 'Inter', sans-serif;
-}
+} */
 
 .container {
     max-width: 1440px;
@@ -31,6 +31,9 @@ body {
 
 .btn-primary-color:hover, .btn-otp:hover {
     background-color: #1D60A6;
+    color: #fff;
+    transition: background-color 0.2s ease 0.2s;
+    /* 0.5s delay */
 }
 
 .option-login p {
@@ -259,6 +262,10 @@ body {
     letter-spacing: 0;
     color: #676767;
 }
+
+
+
+
 /* rating page css style here */
 .container-width {
     height: 100vh;
@@ -285,19 +292,42 @@ body {
     position: relative;
 }
 
-.background-image {
+.background-image-ratting {
     height: 150px;
     width: 366px;
-    background-image: url('/assets/img/bg-Ellipse.svg');
+    background-image: url('/assets/img/bg-blue-shap.png');
     background-repeat: no-repeat;
     background-position: bottom center;
     background-size: cover;
     display: flex;
     flex-direction: column;
-    top: 327px;
+    top: 346px;
     position: absolute;
     z-index: -1;
     left: -28px;
+    clip-path: circle(76.9% at 50% 25%);
+    border-top-right-radius: 78%;
+    border-top-left-radius: 78%;
+
+}
+
+
+.background-image-bg-blue {
+    height: 147px;
+    width: 366px;
+    background-image: url('/assets/img/bg-blue-shap.png');
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    top: 264px;
+    position: absolute;
+    z-index: -1;
+    left: -28px;
+    clip-path: circle(76.9% at 50% 25%);
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
 }
 
 /* rating page css style end here */
@@ -308,7 +338,23 @@ body {
     border-bottom-left-radius: 80px;
     border-bottom-right-radius: 80px;
     padding: 50px 50px;
+    clip-path: circle(72.9% at 50% 33%);
 
+}
+
+/* .fil-color-border {
+    clip-path: circle(76.9% at 50% 33%);
+    height: 168px;
+    width: 396px;
+    background-color: #E8EFF6;
+    border-top-right-radius: 80%;
+    border-top-left-radius: 80%;
+} */
+.sidebar-content .dark-gray-16-600 {
+    color: #676767;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
 }
 
 .dark-gray-24-500 {
@@ -347,10 +393,18 @@ body {
     text-align: left;
 }
 
+.modal-container h2 {
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 44px;
+    color: #1D60A6;
+
+}
+
 /* responsive styles here */
 
 
-@media (max-width: 1024px) {
+/* @media (max-width: 1024px) {
     .arrow-hand::after {
         top: 150px;
         left: 270px;
@@ -384,11 +438,15 @@ body {
         left: 135px;
         background-size: contain;
     }
+
+    .small-screen-space-mb40 {
+        margin-bottom: 40px;
+    }
 }
 
 
 
-/* @media (max-width: 390px) {} */
+
 
 @media (max-width: 375px) {
     .arrow-hand::after {
@@ -396,4 +454,15 @@ body {
         left: 80px;
         background-size: auto;
     }
-}
+
+    .before-dash::before {
+        width: 130px;
+        left: -140px;
+    }
+
+    .after-dash:after {
+        width: 130px;
+        right: -140px;
+    }
+
+} */

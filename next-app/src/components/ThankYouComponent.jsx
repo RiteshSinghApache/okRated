@@ -11,8 +11,8 @@ export default function ThankYouComponent() {
             <Image
               src="/assets/img/taj-log-l.svg"
               alt="Taj Logo"
-              width={180}
-              height={60}
+              width={260}
+              height={150}
               className="mx-auto"
             />
           </p>
@@ -20,8 +20,8 @@ export default function ThankYouComponent() {
             <Image
               src="/assets/img/thank-you.svg"
               alt="Thank You"
-              width={300}
-              height={120}
+              width={500}
+              height={250}
               className="mx-auto"
             />
           </p>

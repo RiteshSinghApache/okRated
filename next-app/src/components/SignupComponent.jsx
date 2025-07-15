@@ -183,7 +183,7 @@ export default function SignupComponent() {
 
                 {step === 2 && (
                   <>
-                    <div lassName="col-12">
+                    <div className="col-12">
                         <div className="mt-3">
                             <div className="position-relative">
                                 <div className="col-12 mt-4">

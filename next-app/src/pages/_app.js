@@ -1,13 +1,16 @@
 // /pages/_app.js
-//import 'bootstrap/dist/css/bootstrap.min.css'
+//url('/assets/img/bg.jpg');
+//import 'bootstrap/dist/css/bootstrap.min.css';
+import '@/styles/bootstrap.min.css';
+import '@/styles/custome-style.css';
+import '@/styles/globals.css';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Provider } from 'react-redux'
 import { store } from '@/store/store'
 import { loadUserFromStorage } from '@/store/authSlice';
-import { GoogleOAuthProvider } from '@react-oauth/google'
-import '@/styles/custome-style.css';
-import '@/styles/globals.css';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 
 function AuthInitializer() {
   const dispatch = useDispatch();

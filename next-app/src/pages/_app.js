@@ -1,4 +1,5 @@
 // /pages/_app.js
+//PORT=4000 npm run dev
 //url('/assets/img/bg.jpg');
 //import 'bootstrap/dist/css/bootstrap.min.css';
 import '@/styles/bootstrap.min.css';

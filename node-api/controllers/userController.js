@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 exports.getProfile = async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT id, name, email, phone, role, created_at FROM new_users WHERE id = ?', [req.user.id]);
+    const [rows] = await db.query('SELECT id, name, email, phone, role, qr_code_path, created_at FROM new_users WHERE id = ?', [req.user.id]);
     if (!rows.length) return res.status(404).json({ message: 'User not found' });
 
     res.json(rows[0]);

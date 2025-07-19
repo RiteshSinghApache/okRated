@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "@/utils/api";
 
 export default function QRCodeComponent({ profile }) {
     const [showToast, setShowToast] = useState(false);
@@ -17,13 +18,14 @@ export default function QRCodeComponent({ profile }) {
     const generateQRCode = async () => {
         setLoading(true);
         try {
-            // Replace with your actual API endpoint and payload
-            const res = await fetch("/api/generate-qr", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userId: profile.id }),
+            console.log("Generating QR Code for:", profile);
+            const generateQRCode = process.env.NEXT_PUBLIC_BASE_URL +"/rating/" + `${profile.unique_key || ""}`;
+            const res = await api.patch("/user/generate-qr", {
+                user_id: profile.id,
+                url: generateQRCode,
             });
             const data = await res.json();
+            console.log("QR Code generated:", data);
             if (data.qr_code_path) {
                 setQrPath(data.qr_code_path);
             }

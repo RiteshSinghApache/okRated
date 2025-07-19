@@ -1,5 +1,3 @@
-
-
 import QRCodeComponent from "./QRCodeComponent";
 import SubscriptionPlanComponent from "./SubscriptionPlanComponent";
 import SummaryComponent from "./SummaryComponent";

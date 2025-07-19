@@ -48,7 +48,7 @@ export default function SideBarComponent() {
 
                     <div className="modal fade"
                         id="exampleModal1"
-                        tabindex="-1"
+                        tabIndex="-1"
                         aria-labelledby="exampleModalLabel1"
                         aria-hidden="true">
                         <div
@@ -171,7 +171,7 @@ export default function SideBarComponent() {
 
                     {/* <!-- Logout Confirmation Modal --> */}
                     <div className="modal fade" id="logoutModal1"
-                        tabindex="-1" aria-labelledby="logoutModalLabel"
+                        tabIndex="-1" aria-labelledby="logoutModalLabel"
                         aria-hidden="true">
                         <div className="modal-dialog modal-dialog-centered">
                             <div

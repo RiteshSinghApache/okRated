@@ -4,7 +4,7 @@ export default function SideBarForMobileComponent() {
     const router = useRouter();
     return (
         <div className="offcanvas offcanvas-start bg-gray-light"
-                tabindex="-1"
+                tabIndex="-1"
                 id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
 
                 <div
@@ -64,7 +64,7 @@ export default function SideBarForMobileComponent() {
 
                         <div className="modal fade"
                             id="exampleModal2"
-                            tabindex="-1"
+                            tabIndex="-1"
                             aria-labelledby="exampleModalLabel2"
                             aria-hidden="true">
                             <div
@@ -197,7 +197,7 @@ export default function SideBarForMobileComponent() {
 
                             {/* Logout Confirmation Modal */}
                             <div className="modal fade" id="logoutModal2"
-                                tabindex="-1"
+                                tabIndex="-1"
                                 aria-labelledby="logoutModalLabel2"
                                 aria-hidden="true">
                                 <div className="modal-dialog modal-dialog-centered">

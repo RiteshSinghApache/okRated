@@ -7,6 +7,11 @@ import NavComponent from "../components/dashboard/NavComponent";
 import MainComponent from "@/components/dashboard/MainComponent";
 import SideBarForMobileComponent from "../components/dashboard/SideBarForMobileComponent";
 
+import '@/styles/custome-style.css'
+import '@/styles/globals.css'
+import '@/styles/dashboard.css';
+import '@/styles/media-only.css';
+
 export default function ProfileDashboardPage() {
   const router = useRouter();
   const { isAuthenticated } = useSelector((state) => state.auth);

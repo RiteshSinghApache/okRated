@@ -24,15 +24,18 @@ app.use(cookieParser());
 
 // ✅ Serve Static Files (QR Code images, etc.)
 app.use("/qr_code", express.static(path.join(__dirname, "qr_code")));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
+const commonRoutes = require("./routes/commonRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
-app.use('/api/feedback', feedbackRoutes);
+app.use("/api/feedback", feedbackRoutes);
+app.use("/api/common", commonRoutes);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

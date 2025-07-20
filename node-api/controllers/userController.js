@@ -1,8 +1,9 @@
 const db = require('../config/db');
+const path = require('path');
 
 exports.getProfile = async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT id, name, email, phone, role, qr_code_path, created_at, unique_key FROM new_users WHERE id = ?', [req.user.id]);
+    const [rows] = await db.query('SELECT id, name, email, phone, role, qr_code_path, created_at, unique_key, business_name, business_type, google_business_url, business_logo FROM new_users WHERE id = ?', [req.user.id]);
     if (!rows.length) return res.status(404).json({ message: 'User not found' });
 
     res.json(rows[0]);
@@ -18,7 +19,7 @@ exports.getProfileByUniqueId = async (req, res) => {
       return res.status(400).json({ message: 'Unique key missing' });
     }
     const [rows] = await db.query(
-      'SELECT SELECT id, name, email, phone, role, qr_code_path, created_at, unique_key FROM new_users WHERE unique_key = ?',
+      'SELECT id, name, email, phone, role, qr_code_path, created_at, unique_key, business_name, business_type, google_business_url, business_logo FROM new_users WHERE unique_key = ?',
       [uniqueKey]
     );
     if (!rows.length) return res.status(404).json({ message: 'User not found' });
@@ -51,4 +52,42 @@ exports.updateProfile = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Failed to complete profile', error: err.message });
   }
+};
+
+exports.uploadBusinessLogo = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'No logo uploaded' });
+        }
+
+        const { business_name, business_type, google_business_url } = req.body;
+        const logoUrl = `http://localhost:5001/${req.file.path.replace(/\\/g, "/")}`;
+        const user_id = req.user.id;
+
+        const updateFields = {
+          ...(business_name && { business_name }),
+          ...(business_type && { business_type }),
+          ...(google_business_url && { google_business_url }),
+          ...(logoUrl && { business_logo: logoUrl }),
+        };
+
+        const updateKeys = Object.keys(updateFields);
+        const updateValues = Object.values(updateFields);
+        const sql = `UPDATE new_users SET ${updateKeys.map(key => `${key} = ?`).join(', ')} WHERE id = ?`;
+        await db.query(sql, [...updateValues, user_id]);
+
+        res.json({
+            success: true,
+            message: 'Business profile updated',
+            data: {
+                business_logo: logoUrl,
+                business_name,
+                business_type,
+                google_business_url,
+            },
+        });
+    } catch (err) {
+        console.error('Upload business logo error:', err);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
 };

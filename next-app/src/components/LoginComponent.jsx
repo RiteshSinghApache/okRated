@@ -63,7 +63,11 @@ export default function LoginComponent() {
 
       dispatch(loginSuccess({ user: res.data.user, token: res.data.token }));
       localStorage.setItem('token', res.data.token);
-      router.push('/dashboard');
+      if( res.data.user.paymentStatus !== 'success') {
+        router.push('/pricing');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (err) {
       console.error(err);
       alert('Invalid OTP');
@@ -81,7 +85,11 @@ export default function LoginComponent() {
         if (!res.data?.user || !res.data?.token) throw new Error('Invalid response');
         dispatch(loginSuccess({ user: res.data.user, token: res.data.token }));
         localStorage.setItem('token', res.data.token);
-        router.push('/dashboard');
+        if( res.data.user.paymentStatus !== 'success') {
+          router.push('/pricing');
+        } else {
+          router.push('/dashboard');
+        }
       } catch (err) {
         console.error(err);
         alert('Google login failed');

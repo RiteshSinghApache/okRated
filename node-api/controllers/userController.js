@@ -3,7 +3,9 @@ const path = require('path');
 
 exports.getProfile = async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT id, name, email, phone, role, qr_code_path, created_at, unique_key, business_name, business_type, google_business_url, business_logo FROM new_users WHERE id = ?', [req.user.id]);
+    const [rows] = await db.query('SELECT u.id, u.name, u.email, u.phone, u.role, u.qr_code_path, u.created_at, u.unique_key, u.business_name, u.google_business_url, u.business_logo, u.business_type FROM new_users u WHERE u.id = ?', [req.user.id]);
+
+    // const [rows] = await db.query('SELECT u.id, u.name, u.email, u.phone, u.role, u.qr_code_path, u.created_at, u.unique_key, u.business_name, u.google_business_url, u.business_logo, b.business AS business_type FROM new_users u INNER JOIN business_type b ON u.business_type = b.id WHERE u.id = ?', [req.user.id]);
     if (!rows.length) return res.status(404).json({ message: 'User not found' });
 
     res.json(rows[0]);
@@ -19,9 +21,14 @@ exports.getProfileByUniqueId = async (req, res) => {
       return res.status(400).json({ message: 'Unique key missing' });
     }
     const [rows] = await db.query(
-      'SELECT id, name, email, phone, role, qr_code_path, created_at, unique_key, business_name, business_type, google_business_url, business_logo FROM new_users WHERE unique_key = ?',
+      'SELECT u.id, u.name, u.email, u.phone, u.role, u.qr_code_path, u.created_at, u.unique_key, u.business_name, u.google_business_url, u.business_logo, u.business_type FROM new_users u WHERE u.unique_key = ?',
       [uniqueKey]
     );
+
+    // const [rows] = await db.query(
+    //   'SELECT u.id, u.name, u.email, u.phone, u.role, u.qr_code_path, u.created_at, u.unique_key, u.business_name, u.google_business_url, u.business_logo, b.business AS business_type FROM new_users u INNER JOIN business_type b ON u.business_type = b.id WHERE u.unique_key = ?',
+    //   [uniqueKey]
+    // );
     if (!rows.length) return res.status(404).json({ message: 'User not found' });
     res.json(rows[0]);
   } catch (err) {
@@ -54,25 +61,32 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-exports.uploadBusinessLogo = async (req, res) => {
+exports.updateBusinessProfile = async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ success: false, message: 'No logo uploaded' });
-        }
-
         const { business_name, business_type, google_business_url } = req.body;
-        const logoUrl = `http://localhost:5001/${req.file.path.replace(/\\/g, "/")}`;
         const user_id = req.user.id;
 
+        // Only generate logo URL if file was uploaded
+        let logoUrl = null;
+        if (req.file) {
+            logoUrl = `http://localhost:5001/${req.file.path.replace(/\\/g, "/")}`;
+        }
+
+        // Dynamically construct update fields
         const updateFields = {
-          ...(business_name && { business_name }),
-          ...(business_type && { business_type }),
-          ...(google_business_url && { google_business_url }),
-          ...(logoUrl && { business_logo: logoUrl }),
+            ...(business_name && { business_name }),
+            ...(business_type && { business_type }),
+            ...(google_business_url && { google_business_url }),
+            ...(logoUrl && { business_logo: logoUrl }),
         };
+
+        if (Object.keys(updateFields).length === 0) {
+            return res.status(400).json({ success: false, message: 'No data to update' });
+        }
 
         const updateKeys = Object.keys(updateFields);
         const updateValues = Object.values(updateFields);
+
         const sql = `UPDATE new_users SET ${updateKeys.map(key => `${key} = ?`).join(', ')} WHERE id = ?`;
         await db.query(sql, [...updateValues, user_id]);
 
@@ -91,3 +105,4 @@ exports.uploadBusinessLogo = async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 };
+

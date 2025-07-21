@@ -86,7 +86,7 @@ exports.verifyOtp = async (req, res) => {
     let isNewUser = false;
 
     const [users] = await db.query(
-      "SELECT id, phone FROM new_users WHERE phone = ?",
+      "SELECT id, phone, unique_key, payment_status FROM new_users WHERE phone = ?",
       [phone]
     );
 
@@ -127,7 +127,9 @@ exports.verifyOtp = async (req, res) => {
           id: user.id,
           phone: user.phone,
           name: user.name || null,
-          email: user.email || null
+          email: user.email || null,
+          uniqueKey: user.unique_key || null,
+          paymentStatus: user.payment_status || null
         },
         token: accessToken,
         refreshToken,

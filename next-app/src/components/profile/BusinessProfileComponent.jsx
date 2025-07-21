@@ -102,7 +102,7 @@ export default function BusinessProfileComponent({ profile }) {
 
 
     return (
-        <div className="container py-4">
+        <div className="container">
             {!isEditing ? (
                 <>
                     {/* READ-ONLY VIEW */}
@@ -110,9 +110,8 @@ export default function BusinessProfileComponent({ profile }) {
                         <div className="d-flex align-items-center">
                             <img
                                 src={preview}
-                                className="me-3 rounded border"
+                                className="me-4 rounded border"
                                 alt="Business Logo"
-                                width={60}
                                 onError={() => setPreview("/assets/img/logo-preview.svg")}
                             />
                             <div>
@@ -138,11 +137,12 @@ export default function BusinessProfileComponent({ profile }) {
                 </>
             ) : (
                 <>
-                    <h3 className="text-center mb-4">Update Your Business Profile</h3>
-                    <form onSubmit={handleSubmit} noValidate>
-                        <div className="mb-3">
-                            <label className="form-label" htmlFor="business_name">Business Name</label>
-                            <input
+                    <div className="row justify-content-center align-items-center">
+                        <h3 className="text-center mb-4">Update Your Business Profile</h3>
+                        <form onSubmit={handleSubmit} noValidate>
+                            <div className="mb-3">
+                                <label className="form-label" htmlFor="business_name">Business Name</label>
+                                <input
                                 type="text"
                                 id="business_name"
                                 name="business_name"
@@ -166,7 +166,7 @@ export default function BusinessProfileComponent({ profile }) {
                                 >
                                 <option value="" disabled>Select business type</option>
                                 {businessTypes.map((type) => (
-                                    <option key={type.id} value={type.id}>
+                                    <option key={type.id} value={type.business}>
                                     {type.business}
                                     </option>
                                 ))}
@@ -239,11 +239,12 @@ export default function BusinessProfileComponent({ profile }) {
                             >
                                 Cancel
                             </button>
-                            <button type="submit" className="btn btn-success" disabled={loading}>
-                                {loading ? "Saving..." : "Save Changes"}
+                            <button type="submit" className="btn btn-info" disabled={loading}>
+                                {loading ? "Updating..." : "Update & Proceed"}
                             </button>
                         </div>
                     </form>
+                    </div>
                 </>
             )}
         </div>

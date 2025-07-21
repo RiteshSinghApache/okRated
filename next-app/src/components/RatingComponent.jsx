@@ -6,7 +6,8 @@ export default function RatingComponent({ userDetails }) {
   const router = useRouter();
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
-  const { name, unique_key } = userDetails || {};
+  const { name, unique_key, google_business_url, business_logo, business_name } = userDetails || {};
+  const [businessLogo, setBusinessLogo] = useState(business_logo || "/assets/img/logo-preview.svg");
   const handleRatingClick = (rate) => {
     setRating(rate);
     // Perform task based on selected rating
@@ -18,7 +19,8 @@ export default function RatingComponent({ userDetails }) {
         break;
       case 4:
       case 5:
-        router.replace('/dashboard');
+        const google_feedback_url = google_business_url || '';
+        router.replace(google_feedback_url);
         break;
       default:
         break;
@@ -34,13 +36,15 @@ export default function RatingComponent({ userDetails }) {
                   <>
                     <p>
                       <Image
-                        src="/assets/img/taj-logo.svg"
-                        alt="Taj Logo"
-                        width={350}
-                        height={80}
-                        className="mx-auto" />
+                        src={businessLogo}
+                        alt={`Business Logo ${business_name}`}
+                        className="mx-auto" 
+                        onError={() => setBusinessLogo("/assets/img/logo-preview.svg")}
+                        width={120}
+                        height={120}
+                      />
                     </p>
-                    <h1 className="h1size30 pb-5 pt-2">{name}</h1>
+                    <h1 className="h1size30 pb-5 pt-2">{business_name}</h1>
                   </>
                 )}
                 <p className="dark-gray-16-500">
@@ -57,25 +61,23 @@ export default function RatingComponent({ userDetails }) {
                         style={{ cursor: 'pointer' }}
                         >
                         <Image
+                            width={60}
+                            height={60}
                             src={
                             (hovered || rating) >= star
                                 ? '/assets/img/star-filled.svg'
                                 : '/assets/img/star-outline.png'
                             }
                             alt={`Star ${star}`}
-                            width={60}
-                            height={60}
                         />
                         </span>
                     ))}
                 </div>
                 <div className="bottom-image position-relative">
-                    <Image
-                    src="/assets/img/image-w-100.svg"
-                    alt="Bottom Image"
-                    width={800}
-                    height={200}
-                    className="w-100"
+                    <img
+                      src="/assets/img/image-w-100.svg"
+                      alt="Bottom Image"
+                      className="w-100"
                     />
                     <div className="background-image"></div>
                 </div>

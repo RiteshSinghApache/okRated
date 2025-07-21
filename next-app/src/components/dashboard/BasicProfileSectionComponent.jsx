@@ -1,3 +1,4 @@
+import React, { useRef, useState, useEffect } from "react";
 import QRCodeComponent from "./QRCodeComponent";
 import SubscriptionPlanComponent from "./SubscriptionPlanComponent";
 import SummaryComponent from "./SummaryComponent";
@@ -5,6 +6,7 @@ import ChartComponent from "./ChartComponent";
 import ReportComponent from "./ReportComponent";
 
 export default function BasicProfileSectionComponent({profile}) {
+    const [preview, setPreview] = useState(profile.business_logo || "/assets/img/logo-preview.svg");
     // console.log("Rendering BasicProfileSectionComponent with profile:", profile);
 
   return (
@@ -14,15 +16,16 @@ export default function BasicProfileSectionComponent({profile}) {
                 <div className="clearfix">
                     <div className="img-float-size">
                         <img
-                            src="assets/img/dashboard-logo.svg"
+                            src={preview}
                             className="px-3 py-3 float-start me-3"
-                            alt="logo"/>
+                            alt="logo"
+                            onError={() => setPreview("/assets/img/logo-preview.svg")}
+                        />
                         <div className="inner-box">
                             <h5
-                                className="card-title">Taj
-                                Hotels</h5>
+                                className="card-title">{profile.business_name || "N/A"}</h5>
                             <p
-                                className="dark-gray-16-400">Restaurant</p>
+                                className="dark-gray-16-400">{profile.business_type || "N/A"}</p>
                         </div>
                     </div>
                 </div>

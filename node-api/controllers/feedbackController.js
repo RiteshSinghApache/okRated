@@ -1,33 +1,37 @@
 const db = require('../config/db'); // your MySQL connection
 
 exports.submitFeedback = async (req, res) => {
-  const userId = req.user.id; // from token
+  console.log('Feedback submission request:', req.body);
+
   const {
+    unique_key,
+    rating,
     name,
     email,
     phone,
-    whatWentWrong = [],
+    reasons = [],
     otherReason,
-    improvements,
+    improvement,
     followUp
   } = req.body;
 
   try {
     const feedbackQuery = `
       INSERT INTO feedbacks
-      (user_id, name, email, phone, what_went_wrong, other_reason, improvements, follow_up)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      (unique_key, rating, name, email, phone, what_went_wrong, other_reason, improvements, follow_up)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     await db.query(feedbackQuery, [
-      userId,
-      name,
-      email,
-      phone,
-      JSON.stringify(whatWentWrong),
+      unique_key || '',
+      rating || null,
+      name || '',
+      email || '',
+      phone || '',
+      JSON.stringify(reasons),
       otherReason || '',
-      improvements || '',
-      followUp ? 1 : 0
+      improvement || '',
+      followUp === 'Yes' ? 1 : 0
     ]);
 
     res.status(201).json({ message: 'Feedback submitted successfully' });
@@ -37,6 +41,7 @@ exports.submitFeedback = async (req, res) => {
   }
 };
 
+
 exports.getAllFeedbacks = async (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ message: 'Access denied' });
@@ -44,9 +49,8 @@ exports.getAllFeedbacks = async (req, res) => {
 
   try {
     const [feedbacks] = await db.query(`
-      SELECT f.*, u.name AS username 
+      SELECT f.* 
       FROM feedbacks f 
-      JOIN users u ON u.id = f.user_id
       ORDER BY f.created_at DESC
     `);
     res.json(feedbacks);

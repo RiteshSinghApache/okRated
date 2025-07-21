@@ -47,8 +47,14 @@ export default function PricingComponent() {
                           </li>
                         ))}
                       </ul>
-                      <Link href="/login" className="button-animation button-before-animation">
-                        Get started
+                      <Link
+                        href={{
+                          pathname: "/payment-gateway",
+                          query: { plan: "basic" }, // or premium
+                        }}
+                        className="button-animation button-before-animation"
+                        >
+                          Get started
                       </Link>
                     </div>
                   </div>

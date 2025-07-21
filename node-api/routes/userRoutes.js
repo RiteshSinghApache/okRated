@@ -35,12 +35,10 @@ router.patch(
   '/update-profile-business',
   jwtMiddleware,
   upload.single("logo"), // logo field must match frontend
-  userController.uploadBusinessLogo
+  userController.updateBusinessProfile
 );
 router.get('/profile/unique/:uniqueKey', userController.getProfileByUniqueId);
 router.patch('/generate-qr', jwtMiddleware, generateQRCode);
 
-// Upload business logo and update business info
-router.post('/upload-logo', jwtMiddleware, upload.single('logo'), userController.uploadBusinessLogo);
 
 module.exports = router;

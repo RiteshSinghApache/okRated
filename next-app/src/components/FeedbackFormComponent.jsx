@@ -8,7 +8,8 @@ import axios from 'axios';
 export default function FeedbackFormComponent() {
   const router = useRouter();
   const { rating: queryRating, unique_key } = router.query;
-
+  const [business_logo, setBusinessLogo] = useState("/assets/img/logo-preview.svg");
+  const [business_name, setBusinessName] = useState("");
   const [rating, setRating] = useState(1);
   const [hovered, setHovered] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState('');
@@ -48,7 +49,9 @@ export default function FeedbackFormComponent() {
       try {
         const res = await axios.get(`http://localhost:5001/api/user/profile/unique/${unique_key}`);
         if (res.data) {
-          const { name, email, phone } = res.data;
+          const { name, email, phone, business_logo, business_name } = res.data;
+          setBusinessLogo(business_logo || "/assets/img/logo-preview.svg");
+          setBusinessName(business_name || "");
           // setFormData((prev) => ({
           //   ...prev,
           //   name: name || '',
@@ -169,7 +172,7 @@ export default function FeedbackFormComponent() {
       <div className="row">
         <div className="bg-color-radius">
           <p>
-            <Image src="/assets/img/taj-logo.svg" alt="Logo" width={120} height={40} className="mx-auto" />
+            <Image src={business_logo || "/assets/img/logo-preview.svg"} alt={`Business Logo ${business_name || ""}`} width={110} height={110} className="mx-auto" />
           </p>
           <p className="dark-gray-24-500 pb-3 pt-2">We’re sorry your<br />experience wasn’t great.</p>
           <p className="dark-gray-14-400">What are your thoughts on<br />the experience with us?</p>
@@ -315,10 +318,12 @@ export default function FeedbackFormComponent() {
             </div>
           </div>
 
-          {/* Submit Button */}
-          <div className="col-12 mt-4">
+          <div className="col-12 mt-4 " style={{ padding: '30px' }}>
             <div className="d-grid">
-              <button type="submit" className="button-animation button-before-animation validate">
+              {/* <button type="submit" className="button-animation button-before-animation validate">
+                Submit Feedback
+              </button> */}
+              <button type="submit" className="btn btn-primary btn-lg btn-block ">
                 Submit Feedback
               </button>
             </div>

@@ -1,5 +1,5 @@
 import SideBarComponent from "../dashboard/SideBarComponent";
-import BasicProfileSectionComponent from "./BasicProfileSectionComponent";
+import BusinessProfileComponent from "./BusinessProfileComponent";
 
 export default function MainComponent({ profile }) {
     console.log("Rendering MainComponent with profile:", profile);
@@ -11,7 +11,7 @@ export default function MainComponent({ profile }) {
                 <div className="row">
                     <div className="col-12">
                         <div className="row my-4">
-                            <BasicProfileSectionComponent profile={profile} />
+                            <BusinessProfileComponent profile={profile} />
                         </div>
                     </div>
                 </div>
